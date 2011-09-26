@@ -4,7 +4,7 @@ Plugin Name: Smartshare
 Plugin URI: http://wordpress.org/extend/plugins/smartshare/
 Description: Include social share buttons in your template, that doesn't cause additional requests, javascript, css-files or iframes.
 Author: Christoph Dietrich
-Version: 1.0
+Version: 1.1
 Author URI: http://www.scrollleiste.de/
 */
 
@@ -117,7 +117,23 @@ function get_plusone_link($linkContent = "+1", $cssClass = "") {
 	if($cssClass != "") $class = ' class="' . $cssClass .'"';
 	
 	// build share link
-	return '<a href="' . $url . $class . '" rel="nofollow" title="Google +1">' . $linkContent . '</a>';
+	//return '<a href="' . $url . $class . '" rel="nofollow" title="Google +1">' . $linkContent . '</a>';
+	
+	return '<script type="text/javascript">
+	    function loadScript(jssource) {
+	        var jsnode = document.createElement(\'script\');
+	        jsnode.setAttribute(\'type\',\'text/javascript\');
+	        jsnode.setAttribute(\'src\',jssource);
+	        document.getElementsByTagName(\'head\')[0].appendChild(jsnode);
+	        document.getElementById(\'plus1\').innerHTML = "";
+	    }
+	    var plus1source = "https://apis.google.com/js/plusone.js";
+	</script>
+
+	<a id="plus1" href="javascript:loadScript(plus1source)">
+	<img title="Show Google +1 Button" alt="Show Google +1 Button" src="' . SMARTSHARE_FOLDER . '/images/smallplusone.png">
+	</a>
+	<g:plusone></g:plusone>';
 }
 
 
@@ -131,34 +147,27 @@ function smartshare_options_page() {
 ?>
 <div class="wrap">
 <h2>Smartshare</h2>
+
+<table class="form-table">
+ 	<tr valign="top">
+ 		<th scope="row"><?php _e('Show me your love', SMARTSHARE_TEXTDOMAIN); ?></th>
+ 		<td>
+			<p>
+				<?php _e('You like this plugin? By me a beer by clicking on the donate button.', SMARTSHARE_TEXTDOMAIN); ?><br />
+				<?php echo str_replace('%s', 'http://www.scrollleiste.de/web/smartshare', __('You can also go to my <a href="%s">website</a> and click on one of the banners in the article.', SMARTSHARE_TEXTDOMAIN)); ?>
+			</p>
+			<div>
+				<form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="B8QGVWFA333K4"><input type="image" src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Jetzt einfach, schnell und sicher online bezahlen – mit PayPal."><img alt="" border="0" src="https://www.paypalobjects.com/de_DE/i/scr/pixel.gif" width="1" height="1"></form>
+			</div>
+ 		</td>
+ 	</tr>
+</table>
    
    	<form method="post" action="options.php">
    
         <?php wp_nonce_field('update-options') ?>
    
       	<table class="form-table">
-
-         	<tr valign="top">
-         		<th scope="row"><?php _e('Advertising', SMARTSHARE_TEXTDOMAIN); ?></th>
-         		<td>
-						<p>
-							<?php _e('Click on this banner, if you like the plugin:', SMARTSHARE_TEXTDOMAIN); ?>
-						</p>
-						<div>
-							<script type="text/javascript"><!--
-							google_ad_client = "ca-pub-8109381707505306";
-							/* Smartshare */
-							google_ad_slot = "6993683240";
-							google_ad_width = 468;
-							google_ad_height = 60;
-							//-->
-							</script>
-							<script type="text/javascript"
-							src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-							</script>
-						</div>
-         		</td>
-         	</tr>
 
          	<tr valign="top">
          		<th scope="row"><?php _e('Your Twitter username', SMARTSHARE_TEXTDOMAIN); ?></th>
